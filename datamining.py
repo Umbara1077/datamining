@@ -99,7 +99,7 @@ def nominal_dist(data):
 
 #Suggestion: maybe just convert to numeric and run the numeric_dist method
 def ordinal_dist( data ):
-    dist = np.empty( shape = [ len( df ), len( df ) ] )
+    numeric_dist = np.empty( shape = [ len( df ), len( df ) ] )
     n = len(data)
     for i in range(n):
         if getDataType(df[:,i]) == 'Ordinal':
@@ -107,8 +107,8 @@ def ordinal_dist( data ):
             df['data_c']=df.data.apply(conv_dict.get)
     return numeric_dist(data)
 
-#ordinal_dist_matrix = ordinal_dist(df)
-#print(ordinal_dist_matrix)
+ordinal_dist_matrix = ordinal_dist(df)
+print(ordinal_dist_matrix)
 
 #You should pass a dataframe of just the numeric columns here and return a matrix of the distance
 
@@ -147,7 +147,7 @@ def asymmetric_binary_dist(data):
 
 #This should probably call every distance method and aggregate the results.
 #Don't forget to make sure each individual distance matrix is weighted by the number of columns of that data type
-def get_dist( data ):
+def get_dist(data):
    n = len(df)
    aggregate_dist = np.zeros((n, n))
    for column in df.columns:
