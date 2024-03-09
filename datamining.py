@@ -80,6 +80,9 @@ def symmetric_binary_dist(data):
             dist_matrix[i, j] = dist_matrix[j, i] = np.sum(data.iloc[i] != data.iloc[j])
     return dist_matrix
 
+#distance_matrix = symmetric_binary_dist(df)
+#print(distance_matrix)
+
 def nominal_dist(data):
     n = data.shape[0]
     dist_matrix = np.zeros((n, n))
@@ -88,6 +91,9 @@ def nominal_dist(data):
             mismatches = np.sum(data.iloc[i] != data.iloc[j])
             dist_matrix[i, j] = dist_matrix[j, i] = mismatches / data.shape[1]
     return dist_matrix
+
+#distance_matrix = nominal_dist(df)
+#print(distance_matrix)
 
 #You should pass a dataframe of just the ordinal columns here and return a matrix of the distance
 
@@ -101,66 +107,66 @@ def ordinal_dist( data ):
             df['data_c']=df.data.apply(conv_dict.get)
     return numeric_dist(data)
 
+#ordinal_dist_matrix = ordinal_dist(df)
+#print(ordinal_dist_matrix)
+
 #You should pass a dataframe of just the numeric columns here and return a matrix of the distance
+
 
 def numeric_dist(data):
     dist = []
-    normalized_data = (data - data.min()) / (data.max() - data.min())
-    n = normalized_data.shape[0]
-    dist_matrix = np.zeros((n, n))
-    # Calculating Euclidean distance
-    for i in range(n):
-        for j in range(i+1, n):  # To avoid redundant calculations
-            dist = np.sqrt(np.sum((normalized_data.iloc[i] - normalized_data.iloc[j]) ** 2))
-            dist_matrix[i][j] = dist
-            dist_matrix[j][i] = dist  # Symmetric matrix
-    return dist_matrix
+    values = data.loc[:, 'Test1'].tolist()
+    minimum = min(values)
+    maximum = max(values)
+
+    for i in range(len(values)):
+        row = []
+        for j in range(len(values)):
+            row.append(values[j] - (minimum / (maximum - minimum)))
+        dist.append(row)
+
+    return dist
+
+#distance_matrix = numeric_dist(df)
+#print(distance_matrix) 
 
 #You should pass a dataframe of just the asymmetric binary columns here and return a matrix of the distance
 def asymmetric_binary_dist(data):
     n = data.shape[0]
     dist_matrix = np.zeros((n, n))
-
-    # Convert 'Y'/'N' to boolean True/False
-    data_bool = data.applymap(lambda x: True if x == 'Y' else False)
-
+    converted = lambda x: True if x == 'Y' else False
+    data_bool = data.applymap(converted)
     for i in range(n):
         for j in range(i + 1, n):
-            # Perform logical AND then sum; use ^ for XOR to match asymmetric binary logic
             mismatches = np.logical_xor(data_bool.iloc[i], data_bool.iloc[j]).sum()
             dist_matrix[i, j] = dist_matrix[j, i] = mismatches
     return dist_matrix
 
+#distance_matrix = asymmetric_binary_dist(df)
+#print(distance_matrix)
 
 #This should probably call every distance method and aggregate the results.
 #Don't forget to make sure each individual distance matrix is weighted by the number of columns of that data type
 def get_dist( data ):
    n = len(df)
-    # Initialize a zero matrix for the aggregate distance
    aggregate_dist = np.zeros((n, n))
-    
-    # Loop through each column in the dataframe
    for column in df.columns:
         col_data = df[column]
         data_type = getDataType(col_data)
-        
-        # Based on the data type, calculate the distance matrix for the column
-        if data_type == 'Numeric':
-            dist_matrix = numeric_dist(col_data.to_frame())
+        if  data_type == 'Nominal':
+            dist_matrix = nominal_dist(col_data.to_frame())
         elif data_type == 'Symmetric Binary':
             dist_matrix = symmetric_binary_dist(col_data.to_frame())
         elif data_type == 'Asymmetric Binary':
             dist_matrix = asymmetric_binary_dist(col_data.to_frame())
-        elif data_type == 'Nominal':
-            dist_matrix = nominal_dist(col_data.to_frame())
-        elif data_type == 'Ordinal':
-            dist_matrix = ordinal_dist(col_data.to_frame())
+       # elif data_type == 'Numeric':
+       #     dist_matrix = numeric_dist(col_data.to_frame())
+       # elif data_type == 'Ordinal':
+       #     dist_matrix = ordinal_dist(col_data.to_frame())
         else:
-            continue  # Skip if the column's data type is not recognized
+            continue  
         aggregate_dist += dist_matrix
-    
-    # Return the aggregated distance matrix
-   print("Aggregate Distance Matrix:\n", aggregate_dist)
    return aggregate_dist
 
-aggregate_distance_matrix = get_dist(df)
+#aggregate_distance_matrix = get_dist(df)
+#print(aggregate_distance_matrix)
