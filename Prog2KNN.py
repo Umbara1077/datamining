@@ -7,6 +7,9 @@ def euclidean_distance(x1, x2):
 def manhattan_distance(x1, x2):
     return np.sum(np.abs(x1 - x2))
 
+def jaccard_distance(x1, x2):
+    return 1 - np.sum(np.minimum(x1, x2)) / np.sum(np.maximum(x1, x2))
+
 class KNN:
     def __init__(self, k=10, distance='euclidean'):
         self.k = k
@@ -25,6 +28,8 @@ class KNN:
             distances = [euclidean_distance(x, x_train) for x_train in self.X_train]
         elif self.distance == 'manhattan':
             distances = [manhattan_distance(x, x_train) for x_train in self.X_train]
+        elif self.distance == 'jaccard':
+            distances = [jaccard_distance(x, x_train) for x_train in self.X_train]
         else:
             raise ValueError('Invalid distance metric')
         k_indices = np.argsort(distances)[:self.k]
@@ -77,9 +82,16 @@ knn_manhattan = KNN(k=10, distance='manhattan')
 knn_manhattan.fit(X_train, Y_train)
 predictions_manhattan = knn_manhattan.predict(X_test)
 
+knn_jaccard = KNN(k=10, distance='jaccard')
+knn_jaccard.fit(X_train, Y_train)
+predictions_jaccard = knn_jaccard.predict(X_test)
+
 accuracy_manhattan = np.mean(predictions_manhattan == Y_test)
 print("Accuracy (Manhattan):", accuracy_manhattan)
 
 accuracy_euclidean = np.mean(predictions_euclidean == Y_test)
 print("Accuracy (Euclidean):", accuracy_euclidean)
+
+accuracy_jaccard = np.mean(predictions_jaccard == Y_test)
+print("Accuracy (Jaccard):", accuracy_jaccard)
 
