@@ -4,9 +4,13 @@ import numpy as np
 def euclidean_distance(x1, x2):
     return np.sqrt(np.sum((x1 - x2)**2))
 
+def manhattan_distance(x1, x2):
+    return np.sum(np.abs(x1 - x2))
+
 class KNN:
-    def __init__(self, k=10):
+    def __init__(self, k=10, distance='euclidean'):
         self.k = k
+        self.distance = distance
 
     def fit(self, X, Y):
         self.X_train = X
@@ -17,7 +21,12 @@ class KNN:
         return np.array(y_pred)
 
     def _predict(self, x):
-        distances = [euclidean_distance(x, x_train) for x_train in self.X_train]
+        if self.distance == 'euclidean':
+            distances = [euclidean_distance(x, x_train) for x_train in self.X_train]
+        elif self.distance == 'manhattan':
+            distances = [manhattan_distance(x, x_train) for x_train in self.X_train]
+        else:
+            raise ValueError('Invalid distance metric')
         k_indices = np.argsort(distances)[:self.k]
         k_nearest_labels = [self.Y_train[i] for i in k_indices]
         most_common = np.argmax(np.bincount(k_nearest_labels))
@@ -59,5 +68,18 @@ knn.fit(X_train, Y_train)
 
 y_pred = knn.predict(X_test)
 
-accuracy = np.mean(y_pred == Y_test)
-print("Accuracy:", accuracy)
+knn_euclidean = KNN(k=10, distance='euclidean')
+knn_euclidean.fit(X_train, Y_train)
+predictions_euclidean = knn_euclidean.predict(X_test)
+
+# Initialize KNN with Manhattan distance
+knn_manhattan = KNN(k=10, distance='manhattan')
+knn_manhattan.fit(X_train, Y_train)
+predictions_manhattan = knn_manhattan.predict(X_test)
+
+accuracy_manhattan = np.mean(predictions_manhattan == Y_test)
+print("Accuracy (Manhattan):", accuracy_manhattan)
+
+accuracy_euclidean = np.mean(predictions_euclidean == Y_test)
+print("Accuracy (Euclidean):", accuracy_euclidean)
+
