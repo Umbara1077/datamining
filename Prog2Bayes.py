@@ -1,6 +1,8 @@
+# Collaborated with Dante Corso, Gino Costanzo
+
 import pandas as pd
 import numpy as np
-# Worked With Gino Costanzo
+
 class NaiveBayes:
     def fit(self, X, y):
         self.X_train = X
@@ -50,17 +52,21 @@ data = [['Blue','Blue','Brown','Yes'],['Red','Blue','Brown','Yes'],
 
 df = pd.DataFrame( data, columns = ['Favorite Color', 'Eye Color', 'Hair Color', 'Happy'] )
 
+thing1 = sum(map(lambda x: 1 if 'Red' in x else 0, df[['Favorite Color']].values)) 
+thing2 = sum(map(lambda x: 1 if 'Blue' in x else 0, df[['Eye Color']].values)) 
+thing3 = sum(map(lambda x: 1 if 'Brown' in x else 0, df[['Hair Color']].values))
+use = sum(map(lambda x: 1 if 'Yes' in x else 0, df[['Yes']].values))
 
-features = df[['Favorite Color','Eye Color','Hair Color']].values
-target = df['Happy'].values
+features = thing1, thing2, thing3 # df[['Favorite Color','Eye Color','Hair Color']].values 
+target = use # df['Happy'].values
 
 # Initialize the Naive Bayes class
-gnb = NaiveBayes()
+nb = NaiveBayes()
 
 # Use methods in class
-gnb.fit(features, target)
+nb.fit(features, target)
 
-y_pred = gnb.predict(features)
+y_pred = nb.predict(features)
 
 accuracy = np.mean(y_pred == target)
 print("Accuracy:", accuracy)
