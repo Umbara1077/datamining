@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+# Worked With Gino Costanzo
 class NaiveBayes:
     def fit(self, X, y):
         self.X_train = X
