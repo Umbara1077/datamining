@@ -94,4 +94,3 @@ print("Accuracy (Euclidean):", accuracy_euclidean)
 
 accuracy_jaccard = np.mean(predictions_jaccard == Y_test)
 print("Accuracy (Jaccard):", accuracy_jaccard)
-
