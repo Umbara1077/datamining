@@ -80,8 +80,8 @@ def symmetric_binary_dist(data):
             dist_matrix[i, j] = dist_matrix[j, i] = np.sum(data.iloc[i] != data.iloc[j])
     return dist_matrix
 
-#distance_matrix = symmetric_binary_dist(df)
-#print(distance_matrix)
+distance_matrix = symmetric_binary_dist(df)
+print(distance_matrix)
 
 def nominal_dist(data):
     n = data.shape[0]
@@ -92,8 +92,8 @@ def nominal_dist(data):
             dist_matrix[i, j] = dist_matrix[j, i] = mismatches / data.shape[1]
     return dist_matrix
 
-#distance_matrix = nominal_dist(df)
-#print(distance_matrix)
+distance_matrix = nominal_dist(df)
+print(distance_matrix)
 
 #You should pass a dataframe of just the ordinal columns here and return a matrix of the distance
 
@@ -142,8 +142,8 @@ def asymmetric_binary_dist(data):
             dist_matrix[i, j] = dist_matrix[j, i] = mismatches
     return dist_matrix
 
-#distance_matrix = asymmetric_binary_dist(df)
-#print(distance_matrix)
+distance_matrix = asymmetric_binary_dist(df)
+print(distance_matrix)
 
 #This should probably call every distance method and aggregate the results.
 #Don't forget to make sure each individual distance matrix is weighted by the number of columns of that data type
