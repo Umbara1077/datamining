@@ -4,7 +4,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-# Load the dataset
 df = pd.read_csv('nasa.csv')
 
 # Data Analysis
