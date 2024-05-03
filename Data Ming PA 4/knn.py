@@ -2,29 +2,44 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-# Load the dataset from a CSV file directly
 df = pd.read_csv('nasa.csv')
 
-features = df.drop(['Hazardous'], axis=1)
-target = df['Hazardous']
+# Data Analysis
+print("Dataset Overview:")
+print(df.info())
+print("\nDataset Description:")
+print(df.describe())
 
-# Convert categorical data to numeric using get_dummies
-features = pd.get_dummies(features)
+# Check for missing values
+missing_values = df.isnull().sum()
+print("\nMissing Values:")
+print(missing_values)
 
-# Normalize the feature data since KNN is sensitive to the magnitude of data
+# Data Cleaning
+columns_to_drop = ['Neo Reference ID', 'Name', 'Close Approach Date', 'Orbit Determination Date', 'Orbiting Body', 'Equinox']
+df_clean = df.drop(columns=columns_to_drop)
+
+# Convert categorical columns to numeric using get_dummies
+df_clean = pd.get_dummies(df_clean)
+
+# Prepare data for classification
+target = df_clean['Hazardous']
+features = df_clean.drop('Hazardous', axis=1)
+
+# Normalize the feature data
 scaler = StandardScaler()
 features_scaled = scaler.fit_transform(features)
 
-# Splitting the dataset into training (80%) and testing (20%) sets
+# Splitting the dataset
 X_train, X_test, y_train, y_test = train_test_split(features_scaled, target, test_size=0.2, random_state=42)
 
-# Initialize and train the KNeighborsClassifier with the optimal k value (found previously or assume a value)
+# KNN Classifier
 knn = KNeighborsClassifier(n_neighbors=8)
 knn.fit(X_train, y_train)
 
-# Predict on the test set
+# KNN Model Evaluation
 y_pred = knn.predict(X_test)
 
 # Compute the confusion matrix and print it
@@ -49,3 +64,7 @@ lines = report.split('\n')
 print("\nDetailed Metrics:")
 for line in lines[2:4]:
     print(line)
+
+# Calculate and print accuracy score
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\nAccuracy Score: {accuracy}")
